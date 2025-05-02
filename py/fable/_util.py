@@ -94,7 +94,6 @@ def sfwht_optimized_vectorized(a):
     """
     n = int(np.log2(a.shape[0]))
     N = a.shape[0]
-    a = a.copy().astype(np.float64)
 
     for h in range(n):
         mh = 1 << (h + 1)
