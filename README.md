@@ -1,3 +1,10 @@
+
+# Performance Upgrades To FABLE
+- Vectorized/Numba JITified Walsh Hadamard Transforms -> 100 - 400x speedups
+- Vectorized Gray Code Permutations -> upto 20-30x speedups
+
+
+
 # Fast Approximate BLock Encodings (FABLE)
 
 FABLE can synthesize quantum circuits for approximate block-encodings of matrices. A block-encoding is the embedding of a matrix in the leading block of of a larger unitary matrix.
