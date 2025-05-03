@@ -4,7 +4,7 @@ import numpy as np
 from qiskit import QuantumCircuit
 from ._util import compressed_uniform_rotation, sfwht, gray_permutation,sfwht_numba,gray_permutation_vectorized
 from ._util import compressed_uniform_rotation_with_lut
-
+ 
 
 def faster_fable(a, epsilon=None):
     '''FABLE - Fast Approximate BLock Encodings.
@@ -21,8 +21,8 @@ compressed_uniform_rotation_with_lut
             subnormalization factor
     '''
     epsm = np.finfo(a.dtype).eps
-    # alpha = np.linalg.norm(np.ravel(a), np.inf)
-    alpha = 1.0
+    alpha = np.linalg.norm(np.ravel(a), np.inf)
+    # alpha = 1.0
     if alpha > 1:
         alpha = alpha + np.sqrt(epsm)
         a = a/alpha
