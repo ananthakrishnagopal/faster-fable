@@ -155,3 +155,83 @@ def compressed_uniform_rotation(a, ry=True):
                 circ.cx(j, 0)
 
     return circ
+
+
+def count_trailing_ones_optimized(x):
+    if x == 0:
+        return 0
+    return ((x ^ (x + 1)) >> 1).bit_length()
+
+def compute_control_optimized(i, n, max_i):
+    if i == max_i:
+        return 1
+    trailing_ones = count_trailing_ones_optimized(i - 1)
+    return 2*n - trailing_ones
+
+def precompute_control_lut(n):
+    max_trailing_ones = 2*n
+    return [2*n - t for t in range(max_trailing_ones + 1)]
+
+from functools import lru_cache
+
+# @lru_cache(maxsize=None)
+def compressed_uniform_rotation_with_lut(a, ry=True):
+    """
+    Optimized compressed uniform rotation using a control LUT.
+
+    Args:
+        a (np.ndarray): Thresholded vector of dimension 2^(2n)
+        ry (bool): Apply RY if True, RZ otherwise
+
+    Returns:
+        QuantumCircuit: Qiskit circuit representing the rotation.
+    """
+    from qiskit import QuantumCircuit
+
+    n = int(np.log2(a.shape[0]) // 2)
+    max_i = a.shape[0]
+    circ = QuantumCircuit(2 * n + 1)
+
+    # Precompute control LUT (size O(n))
+    max_trailing_ones = 2 * n
+    control_lut = precompute_control_lut(n)
+
+    i = 0
+    while i < max_i:
+        parity_check = 0
+
+        # Apply rotation
+        if a[i] != 0:
+            if ry:
+                circ.ry(a[i], 0)
+            else:
+                circ.rz(a[i], 0)
+
+        # Skip zero blocks
+        while True:
+            # Special case: i+1 == max_i
+            if i + 1 == max_i:
+                ctrl = 1
+            else:
+                # Compute trailing_ones(i) and use LUT
+                trailing_ones = count_trailing_ones_optimized(i)
+                ctrl = control_lut[trailing_ones]
+
+            # Toggle control bit
+            parity_check ^= (1 << (ctrl - 1))
+            i += 1
+
+            # Break if non-zero or end of array
+            if i >= max_i or a[i] != 0:
+                break
+
+        # Add CNOT gates (only for set bits)
+        bit = 1
+        pos = 0
+        while bit <= parity_check:
+            if parity_check & bit:
+                circ.cx(pos + 1, 0)
+            bit <<= 1
+            pos += 1
+
+    return circ
