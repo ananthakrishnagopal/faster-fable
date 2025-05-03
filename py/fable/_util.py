@@ -60,7 +60,7 @@ from numba import njit
 
 @njit
 def sfwht_numba(a):
-     """
+    """
     Numba Accelerated JIT SFWHT, can beat the vectorized version by almost 4x, and naive version by 400x
     
     Args:
