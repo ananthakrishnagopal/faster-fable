@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Fable"""
-from .fable import fable
+from .fable import fable,faster_fable
 
 __all__ = [
-    'fable'
+    'fable',
+    'faster_fable'
 ]
+
 
 
 __version__ = '1.0.1'
