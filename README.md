@@ -2,6 +2,9 @@
 # Performance Upgrades To FABLE
 - Vectorized/Numba JITified Walsh Hadamard Transforms -> 100 - 400x speedups
 - Vectorized Gray Code Permutations -> upto 20-30x speedups
+- Lookup tables for computing control qubits -> 50x speedups
+
+- Overall atleast 30% speedup on base version.
 
 
 
